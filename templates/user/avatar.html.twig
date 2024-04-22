@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}Page Utilisateur{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <h3 class="mb-0">Page utilisateur</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-4">Username : {{ user.username }}</h5>
+                        {% for image in user.image %}
+                            <div class="mb-3">
+                                <h5>Photo de profil : <a href="{{ path("delete_user_avatar",{id:image.id}) }}" class="btn btn-danger">Supprimer</a></h5>
+                                <img class="img-fluid rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ vich_uploader_asset(image)|imagine_filter('vignette_post') }}" alt="">
+                            </div>
+                        {% endfor %}
+                        <hr class="my-4">
+                        <h3 class="card-title">Ajouter une photo de profil</h3>
+                        <div>
+                            {{ form_start(form, {attr:{action:path('add_user_avatar', {id:user.id})}}) }}
+                            {{ form_row(form.imageFile) }}
+                            <button type="submit" class="btn btn-success">Ajouter</button>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="{{ path('app_post') }}" class="btn btn-secondary mb-3">Retour</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

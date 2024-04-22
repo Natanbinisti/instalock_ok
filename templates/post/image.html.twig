@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme formImage 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}Ajouter Image{% endblock %}
+
+
+{% block body %}
+
+
+    {% include 'image/image_or_not_image.html.twig' with {object:post} %}
+    <h3>Ajouter une image</h3>
+
+    {{ form_start(formImage, {attr:{action:path('add_post_image', {id:post.id})}}) }}
+    {{ form_row(formImage.imageFile) }}
+    <button type="submit" class="btn btn-success">Ajouter</button>
+    {{ form_end(formImage) }}
+    <a href="{{ path('app_show',{id: post.id}) }}" class="btn btn-secondary mt-3">Retour</a>
+
+
+
+
+{% endblock %}

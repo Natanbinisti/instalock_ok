@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form "bootstrap_5_layout.html.twig" %}
+
+{% block body %}
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Nouveau Post</h3>
+
+                        {{ form_start(form) }}
+
+
+
+                        <div class="mb-3">
+                            {{ form_label(form.content, 'Contenu du post') }}
+                            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 8}}) }}
+                        </div>
+
+
+
+                        <button type="submit" class="btn btn-success">{{ btnValue }}</button>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

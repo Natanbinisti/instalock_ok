@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme formImage 'bootstrap_5_layout.html.twig' %}
+
+
+
+{% block title %}Page d'image du commentaire de "{{ comment.author.username }}"{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <h3 class="mb-0">Page de l'image du commentaire de "{{ comment.author.username }}"</h3>
+                    </div>
+                    <div class="card-body">
+
+                        {% for image in comment.image %}
+                            <div class="mb-3">
+                                <h5>Photo de commentaire : <a href="{{ path("delete_comment_image",{id:image.id}) }}" class="btn btn-danger">Supprimer</a></h5>
+                                <img class="img-fluid rounded-3" style="height: 150px; object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('vignette_post') }}" alt="">
+                            </div>
+                        {% endfor %}
+
+
+
+                        <h3 class="card-title">Ajouter une image</h3>
+                        <div>
+                            <div class="card-body">
+                                {{ form_start(formImage, {attr:{action:path('add_comment_image', {id:comment.id})}}) }}
+                                {{ form_row(formImage.imageFile) }}
+                                <button type="submit" class="btn btn-success">Ajouter</button>
+                                {{ form_end(formImage) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="text-center mt-3">
+        <a href="{{ path('app_show',{id: comment.post.id}) }}" class="btn btn-secondary">Retour</a>
+    </div>
+{% endblock %}

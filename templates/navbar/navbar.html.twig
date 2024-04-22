@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+
+
+<nav class="navbar navbar-expand-lg bg-insta ">
+    <div class="container-fluid">
+
+        {% if app.user %}
+            {% if app.user.image is not empty %}
+                {% for image in app.user.image %}
+                    <a class="navbar-brand text-light" href="#">Instalock</a>
+                    <a class="navbar-brand active d-flex text-light" aria-current="page" href="{{ path("user_avatar",{id:app.user.id}) }}">
+                        <img class="img-fluid mx-1 rounded-circle" style="max-width: 150px; max-height: 150px;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                        <div>{{ app.user.username }}</div>
+                    </a>
+
+                {% endfor %}
+            {% else %}
+                <a class="navbar-brand text-light" href="#">Instalock</a>
+                <a class="navbar-brand active d-flex text-light" aria-current="page" href="{{ path("user_avatar",{id:app.user.id}) }}" >
+                    <img class="img-fluid mx-1 rounded-circle" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_avatar.png")|imagine_filter('petite_vignette') }}" alt="">
+                    <div>{{ app.user.username }}</div>
+                </a>
+            {% endif %}
+        {% else %}
+            <a class="navbar-brand" href="#">Instalock</a>
+        {% endif %}
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ path("app_post") }}" style="font-size: 1.2rem;">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("app_create_post") }}" style="font-size: 1.2rem;">Ajouter</a>
+                </li>
+
+                {% if app.user %}
+                    <a class="nav-link" href="{{ path('app_logout') }}" style="font-size: 1.2rem;">Log out</a>
+                {% else %}
+                    <a class="nav-link" href="{{ path('app_register') }}" style="font-size: 1.2rem;">Register</a>
+                    <a class="nav-link" href="{{ path('app_login') }}" style="font-size: 1.2rem;">Log in</a>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

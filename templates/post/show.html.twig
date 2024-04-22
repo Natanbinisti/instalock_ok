@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row">
+
+        <!-- Post -->
+        <div class="d-flex flex-column justify-content-center align-items-center mb-3">
+            <div class="card h-100 col-6 rounded-card bg-border" style="min-height: 150px;">
+
+                {% include 'image/image_or_not_image.html.twig' with {object:post} %}
+
+                <div class="card-body">
+                    <h5 class="card-text d-flex justify-content-center">{{ post.content }}</h5>
+
+
+                    {% if post.retweet %}
+
+                        <div class="card rounded-card bg-border m-5" style="min-height: 150px;">
+
+                            {% include 'image/image_or_not_image.html.twig' with {object:post.retweet} %}
+
+                            <div class="card-body">
+                                <h5 class="card-text d-flex justify-content-center">{{ post.retweet.content }}</h5>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-insta">
+                                <small class="text mt-3 d-flex flex-column">
+                                    <div class="mb-2">
+                                        {% if post.retweet.author.image is not empty %}
+                                            {% for image in post.retweet.author.image %}
+                                                <img class="img-fluid rounded-circle " style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                            {% endfor %}
+                                        {% else %}
+                                            <img class="img-fluid mx-1 rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_avatar.png")|imagine_filter('petite_vignette') }}" alt="">
+                                        {% endif%}
+                                        {{ post.retweet.author.username }}
+                                    </div>
+                                    <div class="">{{ post.retweet.createdAt|date("d/m/Y H:i") }}</div>
+                                </small>
+                            </div>
+
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer d-flex justify-content-between bg-insta">
+                    <small class="text-muted mt-3 d-flex flex-column">
+                        <div class="mb-2 text-white">
+                            {% if post.author.image is not empty %}
+                                {% for image in post.author.image %}
+                                    <img class="img-fluid rounded-circle " style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                {% endfor %}
+                            {% else %}
+                                <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_avatar.png")|imagine_filter('petite_vignette') }}" alt="">
+                            {% endif%}
+                            {{ post.author.username }}
+                        </div>
+                        <div class="text-white">{{ post.createdAt|date("d/m/Y H:i") }}</div>
+                    </small>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <a href="{{ path("app_edit_post", {id: post.id}) }}" class="btn btn-warning mt-3"><i class="bi bi-pencil"></i></a>
+                        <a href="{{ path("app_delete_post", {id: post.id}) }}" class="btn btn-danger mt-3"><i class="bi bi-trash3"></i></a>
+                        <a href="{{ path('post_image', {id:post.id}) }}" class="btn btn-success mt-3"><i class="bi bi-image"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container d-flex flex-column col-6 justify-content-center  mb-3">
+            {{ form_start(form, {attr: {action:path("app_comment_create", {id:post.id})}}) }}
+
+
+            {{ form_widget(form.content, {'attr': {'class': 'form-control flex-grow-1 ', 'rows': 2, 'placeholder': 'Ajouter un commentaire...' }}) }}
+            <button type="submit" class="btn btn-success ml-2">Commenter</button>
+            {{ form_end(form) }}
+        </div>
+
+        <h3 class="mt-4 d-flex flex-column justify-content-center align-items-center mb-3">Commentaires :</h3>
+        <div class="row">
+            <div class="container d-flex flex-column justify-content-center col-6 mb-3">
+
+                {% for comment in post.comments|reverse %}
+                    <div class="mb-4">
+                        <div class="card">
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <p class="card-text">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center bg-insta">
+                                <div>
+                                    <div class="d-flex">
+                                        {% if comment.author.image is not empty %}
+                                            {% for image in comment.author.image %}
+                                                <img class="img-fluid rounded-circle " style=" object-fit: cover;" src="{{ vich_uploader_asset(image)|imagine_filter('petite_vignette') }}" alt="">
+                                            {% endfor %}
+                                        {% else %}
+                                            <img class="img-fluid mx-1  rounded-3" style="max-width: 150px; max-height: 150px;" src="{{ asset("images/no_avatar.png")|imagine_filter('petite_vignette') }}" alt="">
+                                        {% endif%}
+                                        <div class="text-light">{{ comment.author.username }}</div>
+
+                                    </div>
+
+                                    <div class="text-light">{{ comment.createdAt|date("d/m/Y H:i") }}</div>
+                                </div>
+
+
+                                <div class="btn-group " role="group">
+                                    <a href="{{ path("edit_comment",{id:comment.id}) }}" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="{{ path("delete_comment",{id:comment.id}) }}" class="btn  btn-danger"><i class="bi bi-trash3"></i></a>
+                                    <a href="{{ path("add_comment_image", {id: comment.id}) }}" class="btn  btn-success"><i class="bi bi-image"></i></a>
+                                    <button class="btn  btn-primary" data-comment-id="{{ comment.id }}" data-bs-toggle="collapse" data-bs-target="#replyForm-{{comment.id}}">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% for replyComment in comment.replyComments %}
+                            <div class="card">
+
+                                <div class="card-body">
+
+
+                                    <p class="card-text">{{ replyComment.content }}</p>
+
+
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {{ form_start(replyForms['replyForm_' ~ comment.id], {'attr':{'id': 'replyForm-'~ comment.id,'class': 'comment-form collapse', 'action': path("app_reply_comment", {'id': comment.id})}}) }}
+                        <div class="form-group mb-3">
+                            {{ form_widget(replyForms['replyForm_' ~ comment.id].content, {'attr': {'class': 'form-control', 'placeholder': 'Add a reply'}}) }}
+                            <button type="submit" class="btn btn-primary">Reply</button>
+                        </div>
+                        {{ form_end(replyForms['replyForm_' ~ comment.id]) }}
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
